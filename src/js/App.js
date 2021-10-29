@@ -33,6 +33,7 @@ class App {
   initPlane() {
     this.shaderPlane = new ShaderPlane({
       scene: this.scene,
+      debug: this.gui,
     })
   }
 
@@ -45,6 +46,8 @@ class App {
     // Controls
     this.controls = new OrbitControls(this.camera, this.canvas)
     this.controls.enableDamping = true
+    this.controls.enablePan = false
+    this.controls.enableZoom = false
   }
 
   initRenderer() {

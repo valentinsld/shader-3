@@ -4,10 +4,15 @@ import vertexShader from '../shaders/ShaderPlane.vert'
 import fragmentShader from '../shaders/ShaderPlane.frag'
 
 class ShaderPlane {
-  constructor({ scene }) {
-    Object.assign(this, { scene })
+  constructor({ scene, debug }) {
+    Object.assign(this, { scene, debug })
+
+    this.params = {
+      blending: 0.012,
+    }
 
     this.init()
+    this.initDebug()
   }
 
   init() {
@@ -21,6 +26,7 @@ class ShaderPlane {
       side: THREE.DoubleSide,
       uniforms: {
         uTime: { value: 0 },
+        uBlending: { value: this.params.blending },
       },
     })
 
@@ -28,6 +34,12 @@ class ShaderPlane {
     this.mesh = new THREE.Mesh(waterGeometry, waterMaterial)
     this.mesh.rotation.x = -Math.PI * 0.5
     this.scene.add(this.mesh)
+  }
+
+  initDebug() {
+    this.debug.add(this.params, 'blending', 0, 0.05).onChange((v) => {
+      this.mesh.material.uniforms.uBlending.value = v
+    })
   }
 
   //

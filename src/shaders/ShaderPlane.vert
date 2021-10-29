@@ -1,6 +1,10 @@
 uniform float uTime;
+uniform float uBlending;
 
 varying float vElevation;
+varying float vRed;
+varying float vGreen;
+varying float vBlue;
 
 //	Classic Perlin 3D Noise 
 //	by Stefan Gustavson
@@ -94,4 +98,7 @@ void main()
   elevation = step(0.08, mod(elevation, 0.1));
   // varying
   vElevation = elevation;
+  vRed = step(0.08, mod(getPerlinNoise3d(vec3(modelPosition.xz, uTime - uBlending)) * circled, 0.1));
+  vGreen = elevation;
+  vBlue = step(0.08, mod(getPerlinNoise3d(vec3(modelPosition.xz, uTime + uBlending)) * circled, 0.1));
 }

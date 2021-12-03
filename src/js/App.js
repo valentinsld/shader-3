@@ -8,6 +8,8 @@ class App {
   constructor() {
     // Debug
     this.gui = new dat.GUI({ width: 340 })
+    this.gui.hide()
+    this.isNFT = window.location.hash === '#NFT'
 
     // Canvas
     this.canvas = document.querySelector('canvas.webgl')
@@ -40,7 +42,7 @@ class App {
   initCamera() {
     // Base camera
     this.camera = new THREE.PerspectiveCamera(75, this.sizes.width / this.sizes.height, 0.1, 100)
-    this.camera.position.set(3, 4, 3)
+    this.camera.position.set(3, 3.3, 3)
     this.scene.add(this.camera)
 
     // Controls
@@ -64,7 +66,7 @@ class App {
   initEvents() {
     window.addEventListener('resize', this.resize.bind(this))
 
-    this.update()
+    if (!this.isNFT) this.update()
   }
 
   resize() {
@@ -84,10 +86,10 @@ class App {
   //
   // Update
   //
-  update() {
-    window.requestAnimationFrame(this.update.bind(this))
+  update(t) {
+    if (!this.isNFT) window.requestAnimationFrame(this.update.bind(this, undefined))
 
-    const elapsedTime = this.clock.getElapsedTime()
+    const elapsedTime = t || this.clock.getElapsedTime()
 
     // Update controls
     this.controls.update()

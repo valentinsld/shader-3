@@ -1,5 +1,6 @@
 uniform float uTime;
 uniform float uBlending;
+uniform float uMoreTime;
 
 varying float vElevation;
 varying float vRed;
@@ -92,13 +93,13 @@ void main()
 
   float distanceCenter = 1.0 - distance(uv,vec2(0.5)) * 2.0;
   float circled = smoothstep(0.0, 0.2, distanceCenter);
-  float elevation = getPerlinNoise3d(vec3(modelPosition.xz, uTime)) * circled;
+  float elevation = getPerlinNoise3d(vec3(modelPosition.xz * 0.89, uTime + uMoreTime)) * circled;
   gl_Position.y += elevation;
 
   elevation = step(0.08, mod(elevation, 0.1));
   // varying
   vElevation = elevation;
-  vRed = step(0.08, mod(getPerlinNoise3d(vec3(modelPosition.xz, uTime - uBlending)) * circled, 0.1));
+  vRed = step(0.08, mod(getPerlinNoise3d(vec3(modelPosition.xz * 0.89, uTime + uMoreTime - uBlending)) * circled, 0.1));
   vGreen = elevation;
-  vBlue = step(0.08, mod(getPerlinNoise3d(vec3(modelPosition.xz, uTime + uBlending)) * circled, 0.1));
+  vBlue = step(0.08, mod(getPerlinNoise3d(vec3(modelPosition.xz * 0.89, uTime + uMoreTime + uBlending)) * circled, 0.1));
 }

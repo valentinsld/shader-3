@@ -9,6 +9,7 @@ class ShaderPlane {
 
     this.params = {
       blending: 0.012,
+      moreTime: 23,
     }
 
     this.init()
@@ -26,6 +27,7 @@ class ShaderPlane {
       side: THREE.DoubleSide,
       uniforms: {
         uTime: { value: 0 },
+        uMoreTime: { value: this.params.moreTime },
         uBlending: { value: this.params.blending },
       },
     })
@@ -39,6 +41,9 @@ class ShaderPlane {
   initDebug() {
     this.debug.add(this.params, 'blending', 0, 0.05).onChange((v) => {
       this.mesh.material.uniforms.uBlending.value = v
+    })
+    this.debug.add(this.params, 'moreTime', 0, 50).onChange((v) => {
+      this.mesh.material.uniforms.uMoreTime.value = v
     })
   }
 

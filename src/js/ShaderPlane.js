@@ -35,6 +35,7 @@ class ShaderPlane {
     // Mesh
     this.mesh = new THREE.Mesh(waterGeometry, waterMaterial)
     this.mesh.rotation.x = -Math.PI * 0.5
+    this.mesh.position.y = 0.37
     this.scene.add(this.mesh)
   }
 

@@ -1,3 +1,5 @@
+#define M_PI 3.1415926535897932384626433832795
+
 uniform float uTime;
 uniform float uBlending;
 uniform float uMoreTime;
@@ -82,6 +84,17 @@ float getPerlinNoise3d(vec3 P)
     float n_xyz = mix(n_yz.x, n_yz.y, fade_xyz.x); 
     return 2.2 * n_xyz;
 }
+float loopNoise3d(vec2 val, float time, float loopDuration, float speed) {
+    //mix 2 noises over loopDuration
+    float loopTime = mod(time, loopDuration);
+    float v1 = getPerlinNoise3d(vec3(val,loopTime * speed));
+    //get noise from 1 loopDuration in the past
+    float v2 = getPerlinNoise3d(vec3(val,(loopTime - loopDuration) * speed));
+    //mix over loopDuration
+    return  mix(v1, v2, loopTime/loopDuration);
+    // TODO : styler :
+    // return  loopTime/loopDuration;
+}
 
 
 void main()
@@ -93,13 +106,13 @@ void main()
 
   float distanceCenter = 1.0 - distance(uv,vec2(0.5)) * 2.0;
   float circled = smoothstep(0.0, 0.2, distanceCenter);
-  float elevation = getPerlinNoise3d(vec3(modelPosition.xz * 0.89, uTime + uMoreTime)) * circled;
-  gl_Position.y += elevation;
+  float elevation = loopNoise3d(vec2(modelPosition.xz * 0.89), uTime + uMoreTime, M_PI * .4, 1.0) * circled;
+  gl_Position.y += elevation * 1.75;
 
   elevation = step(0.08, mod(elevation, 0.1));
   // varying
   vElevation = elevation;
-  vRed = step(0.08, mod(getPerlinNoise3d(vec3(modelPosition.xz * 0.89, uTime + uMoreTime - uBlending)) * circled, 0.1));
+  vRed = step(0.08, mod(loopNoise3d(vec2(modelPosition.xz * 0.89), uTime + uMoreTime - uBlending, M_PI * .4, 1.0) * circled, 0.1));
   vGreen = elevation;
-  vBlue = step(0.08, mod(getPerlinNoise3d(vec3(modelPosition.xz * 0.89, uTime + uMoreTime + uBlending)) * circled, 0.1));
+  vBlue = step(0.08, mod(loopNoise3d(vec2(modelPosition.xz * 0.89), uTime + uMoreTime + uBlending, M_PI * .4, 1.0) * circled, 0.1));
 }

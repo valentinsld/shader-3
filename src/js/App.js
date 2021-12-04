@@ -21,6 +21,7 @@ class App {
       width: window.innerWidth,
       height: window.innerHeight,
     }
+    this.radiusCamera = 4.5
 
     this.initCamera()
     this.initRenderer()
@@ -42,7 +43,7 @@ class App {
   initCamera() {
     // Base camera
     this.camera = new THREE.PerspectiveCamera(75, this.sizes.width / this.sizes.height, 0.1, 100)
-    this.camera.position.set(3, 3.3, 3)
+    this.camera.position.set(this.radiusCamera, 3.3, this.radiusCamera)
     this.scene.add(this.camera)
 
     // Controls
@@ -89,10 +90,17 @@ class App {
   update(t) {
     if (!this.isNFT) window.requestAnimationFrame(this.update.bind(this, undefined))
 
-    const elapsedTime = t || this.clock.getElapsedTime()
+    let elapsedTime = t || this.clock.getElapsedTime()
+    elapsedTime %= (Math.PI * 4)
 
     // Update controls
     this.controls.update()
+    this.camera.position.set(
+      this.radiusCamera * Math.cos(elapsedTime * 0.5),
+      this.camera.position.y,
+      this.radiusCamera * Math.sin(elapsedTime * 0.5),
+    )
+    this.camera.lookAt(new THREE.Vector3())
 
     this.shaderPlane.update(elapsedTime)
 
